@@ -1,0 +1,51 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Dependency directories
+.pnpm/
+
+# Environment variables
+.env
+.env.*.local
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE settings
+.vscode/
+.idea/
+
+# Build and output
+dist/
+build/
+out/
+coverage/
+playwright-report/
+test-results/
+
+# Playwright specific
+blob-report/
+trace.zip
+*.trace
+
+# NPM package files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Optional cache folders
+.cache/
+tmp/
+temp/
+
+# Mac system files
+*.swp
