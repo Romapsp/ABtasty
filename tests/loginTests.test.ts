@@ -22,8 +22,21 @@ test.describe('Login page', () => {
     await expect(page).toHaveTitle(/AB Tasty/)
   })
 
-  test('Unsuccessful Login with Invalid Credentials', async () => {
-    await pm.onLoginPage().fillInForm('test3@example.com', 'password')
+  test('Incorrect Email with Correct Password', async () => {
+    await pm.onLoginPage().fillInForm('test3@example.com', 'password') // incorrect email
+    await expect(pm.onLoginPage().loginErrorMessage).toBeVisible()
+    await expect(pm.onLoginPage().loginErrorMessage).toHaveText('Please enter a valid email or password')
+  })
+
+  test('Unsuccessful Login with Incorrect MFA Code', async () => {
+    await pm.onLoginPage().fillInForm('test@example.com', 'password')
+    await pm.onMFAPage().enterMfaCode(666666)
+    await expect(pm.onMFAPage().loginErrorMessage).toBeVisible()
+    await expect(pm.onMFAPage().loginErrorMessage).toHaveText('Oops! The code you entered is incorrect. Please try again')
+  })
+
+  test('Correct Email with Incorrect Password', async () => {
+    await pm.onLoginPage().fillInForm('test@example.com', 'password1') // incorrect password
     await expect(pm.onLoginPage().loginErrorMessage).toBeVisible()
     await expect(pm.onLoginPage().loginErrorMessage).toHaveText('Please enter a valid email or password')
   })

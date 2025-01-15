@@ -4,11 +4,13 @@ export class MFAPage {
   readonly page: Page
   readonly mfaInput: Locator
   readonly OkBtn: Locator
+  readonly loginErrorMessage: Locator
 
   constructor(page: Page) {
     this.page = page
     this.mfaInput = page.locator('#mfa-code')
     this.OkBtn = page.locator('button[type="Ok"]')
+    this.loginErrorMessage = page.locator('#loginErrorMessage')
   }
 
   async enterMfaCode(code: number){
