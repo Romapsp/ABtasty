@@ -16,4 +16,16 @@ test.describe('Login page', () => {
     await expect(page).toHaveTitle(/AB Tasty/)
   })
 
+  test('Successful Login with Valid Credentials (MFA Disabled)', async ({page}) => {
+    await pm.onLoginPage().fillInForm('test2@example.com', 'password')
+    await expect(page).toHaveURL(/.*dashboard/)
+    await expect(page).toHaveTitle(/AB Tasty/)
+  })
+
+  test('Unsuccessful Login with Invalid Credentials', async () => {
+    await pm.onLoginPage().fillInForm('test3@example.com', 'password')
+    await expect(pm.onLoginPage().loginErrorMessage).toBeVisible()
+    await expect(pm.onLoginPage().loginErrorMessage).toHaveText('Please enter a valid email or password')
+  })
+
 })
