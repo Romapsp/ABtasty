@@ -1,5 +1,5 @@
 
-import { BrowserContext, Page, expect, Locator, test } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { PageManager } from './page-objects/PomManager'
 let pm: PageManager
 
