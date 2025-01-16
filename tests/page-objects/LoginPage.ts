@@ -7,6 +7,7 @@ export class LoginPage {
   readonly signInBtn: Locator
   readonly ssoLoginBtn: Locator
   readonly loginErrorMessage: Locator
+  readonly loginHeader: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -15,6 +16,7 @@ export class LoginPage {
     this.signInBtn = page.getByRole('button', { name: 'Sign In' }) 
     this.ssoLoginBtn = page.getByTestId('ssoLoginButton')
     this.loginErrorMessage = page.locator('#loginErrorMessage')
+    this.loginHeader = page.locator('h1', { hasText: 'Login' })
   }
 
   async enterEmail(email: string) {

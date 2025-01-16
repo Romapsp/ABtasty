@@ -41,4 +41,23 @@ test.describe('Login page', () => {
     await expect(pm.onLoginPage().loginErrorMessage).toHaveText('Please enter a valid email or password')
   })
 
+  test('Verify Functionality of the "Login with SSO" Button', async ({ page }) => {
+    await pm.onLoginPage().ssoLoginBtn.click()
+    await expect(pm.onSSOPage().signInWithSSOHeader).toBeVisible()
+    await expect(page).toHaveURL(/.*ssologin/)
+  })
+
+  test('Verify Back Link Navigation', async ({ page }) => {
+    await pm.onLoginPage().ssoLoginBtn.click()
+    await pm.onSSOPage().backToLoginPageLink.click()
+    await expect(pm.onLoginPage().loginHeader).toBeVisible()
+    await expect(page).toHaveURL(/.*login/)
+  })
+
+  test('Verify Behavior for Unrecognized Email on SSO Screen', async ({ page }) => {
+    await pm.onLoginPage().ssoLoginBtn.click()
+    await pm.onSSOPage().enterSsoEmail('test@example.com')
+    await expect(pm.onSSOPage().ssoEmailErrorMessage).toBeVisible()
+    await expect(pm.onSSOPage().ssoEmailErrorMessage).toHaveText('Please enter a valid email')
+  })
 })
