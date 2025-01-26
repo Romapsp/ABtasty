@@ -12,14 +12,12 @@ test.describe('Login page', () => {
   test('Successful Login with Valid Credentials (MFA Enabled)', async ({page}) => {
     await pm.onLoginPage().login('test@example.com', 'password')
     await pm.onMFAPage().enterMfaCode(123456)
-    await expect(page).toHaveURL(/.*dashboard/)
-    await expect(page).toHaveTitle(/AB Tasty/)
+    await pm.onDashboardPage().assertSuccessfulLogin()
   })
 
   test('Successful Login with Valid Credentials (MFA Disabled)', async ({page}) => {
     await pm.onLoginPage().login('test2@example.com', 'password')
-    await expect(page).toHaveURL(/.*dashboard/)
-    await expect(page).toHaveTitle(/AB Tasty/)
+    await pm.onDashboardPage().assertSuccessfulLogin()
   })
 
   test('Incorrect Email with Correct Password', async () => {
