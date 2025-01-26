@@ -1,6 +1,6 @@
-
 import { expect, test } from '@playwright/test'
 import { PageManager } from '../page-objects/PomManager.ts'
+import { CONSTANTS } from '../utils/const.ts'
 let pm: PageManager
 
 test.describe('Login page', () => {
@@ -9,53 +9,47 @@ test.describe('Login page', () => {
     pm = new PageManager(page)
   })
 
-  test('Successful Login with Valid Credentials (MFA Enabled)', async ({page}) => {
-    await pm.onLoginPage().login('test@example.com', 'password')
-    await pm.onMFAPage().enterMfaCode(123456)
+  test('Successful Login with Valid Credentials (MFA Enabled)', async () => {
+    await pm.onLoginPage().login(CONSTANTS.validEmailWithMfa, CONSTANTS.validPassword)
+    await pm.onMFAPage().enterMfaCode(CONSTANTS.validMfaCode)
     await pm.onDashboardPage().assertSuccessfulLogin()
   })
 
-  test('Successful Login with Valid Credentials (MFA Disabled)', async ({page}) => {
-    await pm.onLoginPage().login('test2@example.com', 'password')
+  test('Successful Login with Valid Credentials (MFA Disabled)', async () => {
+    await pm.onLoginPage().login(CONSTANTS.validEmailWithoutMfa, CONSTANTS.validPassword)
     await pm.onDashboardPage().assertSuccessfulLogin()
   })
 
   test('Incorrect Email with Correct Password', async () => {
-    await pm.onLoginPage().login('test3@example.com', 'password') // incorrect email
-    await expect(pm.onLoginPage().loginErrorMessage).toBeVisible()
-    await expect(pm.onLoginPage().loginErrorMessage).toHaveText('Please enter a valid email or password')
+    await pm.onLoginPage().login(CONSTANTS.invalidEmail, CONSTANTS.validPassword)
+    await pm.onLoginPage().assertLoginErrorMessage(CONSTANTS.wrongCredentialsText);
   })
 
   test('Unsuccessful Login with Incorrect MFA Code', async () => {
-    await pm.onLoginPage().login('test@example.com', 'password')
-    await pm.onMFAPage().enterMfaCode(666666)
-    await expect(pm.onMFAPage().loginErrorMessage).toBeVisible()
-    await expect(pm.onMFAPage().loginErrorMessage).toHaveText('Oops! The code you entered is incorrect. Please try again')
+    await pm.onLoginPage().login(CONSTANTS.validEmailWithMfa, CONSTANTS.validPassword)
+    await pm.onMFAPage().enterMfaCode(CONSTANTS.invalidMfaCode)
+    await pm.onLoginPage().assertLoginErrorMessage(CONSTANTS.wrongMfaCodeText);
   })
 
   test('Correct Email with Incorrect Password', async () => {
-    await pm.onLoginPage().login('test@example.com', 'password1') // incorrect password
-    await expect(pm.onLoginPage().loginErrorMessage).toBeVisible()
-    await expect(pm.onLoginPage().loginErrorMessage).toHaveText('Please enter a valid email or password')
+    await pm.onLoginPage().login(CONSTANTS.validEmailWithoutMfa, CONSTANTS.invalidPassword)
+    await pm.onLoginPage().assertLoginErrorMessage(CONSTANTS.wrongCredentialsText);
   })
 
-  test('Verify Functionality of the "Login with SSO" Button', async ({ page }) => {
+  test('Verify Functionality of the "Login with SSO" Button', async () => {
     await pm.onLoginPage().ssoLoginBtn.click()
-    await expect(pm.onSSOPage().signInWithSSOHeader).toBeVisible()
-    await expect(page).toHaveURL(/.*ssologin/)
+    await pm.onSSOPage().assertSSOPageVisible()
   })
 
-  test('Verify Back Link Navigation', async ({ page }) => {
+  test('Verify Back Link Navigation', async () => {
     await pm.onLoginPage().ssoLoginBtn.click()
     await pm.onSSOPage().backToLoginPageLink.click()
-    await expect(pm.onLoginPage().loginHeader).toBeVisible()
-    await expect(page).toHaveURL(/.*login/)
+    await pm.onLoginPage().assertLoginPageVisible()
   })
 
-  test('Verify Behavior for Unrecognized Email on SSO Screen', async ({ page }) => {
+  test('Verify Behavior for Unrecognized Email on SSO Screen', async () => {
     await pm.onLoginPage().ssoLoginBtn.click()
-    await pm.onSSOPage().enterSsoEmail('test@example.com')
-    await expect(pm.onSSOPage().ssoEmailErrorMessage).toBeVisible()
-    await expect(pm.onSSOPage().ssoEmailErrorMessage).toHaveText('Please enter a valid email')
+    await pm.onSSOPage().enterSsoEmail(CONSTANTS.validSsoEmail)
+    await pm.onSSOPage().assertSsoEmailErrorMessage(CONSTANTS.wrongSsoEmailText)
   })
 })

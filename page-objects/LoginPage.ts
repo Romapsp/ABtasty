@@ -1,5 +1,6 @@
 import { Page, expect, BrowserContext, Locator } from '@playwright/test'
 import CommonActions from '../utils/CommonActions'
+import * as assertions from '../utils/assertions';
 
 export class LoginPage {
   readonly actions: CommonActions;
@@ -26,5 +27,14 @@ export class LoginPage {
     await this.actions.fill(this.emailInput, email)
     await this.actions.fill(this.passwordInput, password)
     await this.actions.click(this.signInBtn)
+  }
+
+  async assertLoginErrorMessage(expectedText: string) {
+    await assertions.assertErrorMessageVisible(this.loginErrorMessage, expectedText);
+  }
+
+  async assertLoginPageVisible() {
+    await assertions.assertURLContains(this.page, 'login')
+    await assertions.assertVisibleElement(this.loginHeader)
   }
 }

@@ -15,4 +15,5 @@ export default class CommonActions {
   async click(locator: Locator){
     await locator.click()
   }
+  
 }

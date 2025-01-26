@@ -13,4 +13,6 @@ export class DashboardPage {
     await assertions.assertURLContains(this.page, 'dashboard');
     await assertions.assertPageTitle(this.page, /AB Tasty/);
   }
+
+  
 }
