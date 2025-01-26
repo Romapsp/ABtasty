@@ -1,6 +1,8 @@
 import { Page, expect, BrowserContext, Locator } from '@playwright/test'
+import CommonActions from '../utils/CommonActions'
 
 export class LoginPage {
+  readonly actions: CommonActions;
   readonly page: Page
   readonly emailInput: Locator
   readonly passwordInput: Locator
@@ -10,6 +12,7 @@ export class LoginPage {
   readonly loginHeader: Locator
 
   constructor(page: Page) {
+    this.actions = new CommonActions(page)
     this.page = page
     this.emailInput = page.locator('#email')
     this.passwordInput = page.locator('#password')
@@ -19,17 +22,9 @@ export class LoginPage {
     this.loginHeader = page.locator('h1', { hasText: 'Login' })
   }
 
-  async enterEmail(email: string) {
-    await this.emailInput.fill(email)
-  }
-
-  async enterPassword(password: string) {
-    await this.passwordInput.fill(password)
-  }
-
-  async fillInForm(email: string, password: string ) {
-    await this.enterEmail(email)
-    await this.enterPassword(password)
-    await this.signInBtn.click()
+  async login(email: string, password: string) {
+    await this.actions.fill(this.emailInput, email)
+    await this.actions.fill(this.passwordInput, password)
+    await this.actions.click(this.signInBtn)
   }
 }
